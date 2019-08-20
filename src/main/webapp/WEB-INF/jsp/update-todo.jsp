@@ -1,14 +1,14 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <html>
     <head>
-        <title>Add Todo</title>
+        <title>Update Todo</title>
         <link href="webjars/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
         <link href="webjars/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet">
         <link href="webjars/font-awesome/5.9.0/css/all.min.css" rel="stylesheet">
     </head>
     <body>
         <div class="jumbotron">
-            <h1 class="display-4 text-center">Add a TODO</h1>
+            <h1 class="display-4 text-center">Update TODO</h1>
         </div>
         <div class="container d-flex justify-content-center">
             <form:form method="post" modelAttribute="todo">
@@ -36,7 +36,7 @@
                     <form:errors path="targetDate" class="text-danger"/>
                 </div>
                 <div class="form-group d-flex justify-content-center">
-                    <button type="submit" class="btn btn-light btn-outline-dark">Add</button>
+                    <button type="submit" class="btn btn-light btn-outline-dark">Update</button>
                 </div>
             </form:form>
 
