@@ -1,11 +1,19 @@
 package com.example.springboot.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 public class Todo {
     private int id;
     private String user;
+    @Size(min = 10, message = "Please enter atleast 10 characters")
     private String desc;
+    @FutureOrPresent(message = "Please select Future Date")
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+
     private Date targetDate;
     private boolean isDone;
 

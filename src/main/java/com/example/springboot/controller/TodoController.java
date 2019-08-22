@@ -3,12 +3,15 @@ package com.example.springboot.controller;
 import com.example.springboot.model.Todo;
 import com.example.springboot.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -19,9 +22,15 @@ public class TodoController {
     @Autowired
     TodoService service;
 
+    @InitBinder
+    public void initBinder(WebDataBinder webDataBinder){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat,false));
+    }
+
     @RequestMapping(value = "/list-todos", method = RequestMethod.GET)
     public String listTodos (ModelMap modelMap){
-        modelMap.put("list", service.retrieveTodos(modelMap.get("name").toString()));
+        modelMap.put("list", service.retrieveTodos(getLoggedInUserName(modelMap)));
         return "list-todos";
     }
 
@@ -36,7 +45,7 @@ public class TodoController {
         if(result.hasErrors()){
             return "todo";
         }
-        service.addTodo(modelMap.get("name").toString(),todo.getDesc(),todo.getTargetDate(),false);
+        service.addTodo(getLoggedInUserName(modelMap),todo.getDesc(),todo.getTargetDate(),false);
         return "redirect:/list-todos";
     }
 
@@ -47,7 +56,7 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/update-todo", method = RequestMethod.GET)
-    public String retrieveTodo(ModelMap modelMap, @RequestParam int id){
+    public String showUpdateTodoPage(ModelMap modelMap, @RequestParam int id){
         Todo todo = service.retrieveTodo(id);
         modelMap.addAttribute("todo", todo);
         return "update-todo";
@@ -58,7 +67,12 @@ public class TodoController {
         if(result.hasErrors()){
             return "update-todo";
         }
+        todo.setUser(getLoggedInUserName(modelMap));
         service.updateTodo(todo);
         return "redirect:/list-todos";
+    }
+
+    private String getLoggedInUserName(ModelMap modelMap) {
+        return modelMap.get("name").toString();
     }
 }
